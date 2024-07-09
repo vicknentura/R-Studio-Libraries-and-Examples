@@ -1,0 +1,35 @@
+titanicData <- read.csv("DataForLabs/titanic.csv", stringsAsFactors = TRUE)
+
+levels(titanicData$survive)
+
+#Factors
+titanicData$survive <- factor(titanicData$survive, levels = c("yes", "no"))
+
+#Frequency Table
+sex_survive_table <- table(titanicData$sex, titanicData$survive)
+sex_survive_table
+
+sex_survive_table_direct <- data.frame(yes = c(307,142), no = c(156,708),
+      row.names = c("female","male"))
+
+#Mosaic Plots
+mosaicplot(sex_survive_table, color = c("darkred", "gold"), xlab ="Sex", ylab = "Survival")
+
+#Odds Ratio
+sex_survive_fisher <- fisher.test(sex_survive_table)
+
+sex_survive_fisher$estimate
+
+sex_survive_fisher$conf.int
+
+#InfStat
+chisq.test(sex_survive_table)$expected
+
+chisq.test(sex_survive_table, correct=FALSE)
+
+fisher.test(sex_survive_table)
+
+#https://whitlockschluter3e.zoology.ubc.ca/RLabs/R_tutorial_Contingency_analysis.html
+
+
+
