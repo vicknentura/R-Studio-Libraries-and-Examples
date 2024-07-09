@@ -1,0 +1,118 @@
+#Initialization
+library(casebase)
+library(visreg)
+library(splines)
+library(ggplot2)
+data("brcancer")
+str(brcancer)
+
+#Main effects only
+mod_cb <- fitSmoothHazard(cens ~ ns(log(time), df = 3) + hormon,
+                          data = brcancer,
+                          time = "time")
+#> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+summary(mod_cb)
+
+
+#Separate Plots
+par(mfrow = c(1, 2))
+plot(mod_cb,
+     hazard.params = list(xvar = "time",
+                          cond = list(hormon = 0),
+                          alpha = 0.05,
+                          main = "No Hormonal Therapy Hazard Function"))
+
+plot(mod_cb,
+     hazard.params = list(xvar = "time",
+                          cond = list(hormon = 1),
+                          alpha = 0.05,
+                          main = "Hormonal Therapy Hazard Function"))
+
+
+#Same Plot
+plot(mod_cb,
+     hazard.params = list(xvar = "time",
+                          by = "hormon",
+                          alpha = 0.05,
+                          ylab = "Hazard"))
+
+
+#ggplot aggfunc
+gg_object <- plot(mod_cb,
+                  hazard.params = list(xvar = "time",
+                                       by = "hormon",
+                                       alpha = 0.20, # 80% CI
+                                       ylab = "Hazard",
+                                       gg = TRUE)) 
+
+attr(gg_object,"class")
+
+gg_object + 
+  theme_minimal()+
+  theme(legend.position = "bottom") + 
+  labs(title = "Casebase") +
+  scale_x_continuous(n.breaks = 10)
+
+
+#With Interaction
+mod_cb_tvc <- fitSmoothHazard(cens ~ hormon * ns(log(time), df = 3),
+                              data = brcancer,
+                              time = "time")
+#> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+summary(mod_cb_tvc)
+
+plot(mod_cb_tvc,
+     hazard.params = list(xvar = "time",
+                          by = "hormon",
+                          alpha = 0.05,
+                          ylab = "Hazard")) 
+
+
+#With Interaction + cts
+mod_cb_tvc <- fitSmoothHazard(cens ~ estrec * ns(log(time), df = 3),
+                              data = brcancer,
+                              time = "time")
+#> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+summary(mod_cb_tvc)
+
+ computed at the 10th, 50th and 90th quantiles of estrec
+plot(mod_cb_tvc,
+     hazard.params = list(xvar = "time",
+                          by = "estrec",
+                          alpha = 1,
+                          ylab = "Hazard")) 
+
+
+# computed at quartiles of estrec
+plot(mod_cb_tvc,
+     hazard.params = list(xvar = c("time"),
+                          by = "estrec",
+                          alpha = 1,
+                          breaks = 4,
+                          ylab = "Hazard")) 
+
+# computed where I want
+plot(mod_cb_tvc,
+     hazard.params = list(xvar = c("time"),
+                          by = "estrec",
+                          alpha = 1,
+                          breaks = c(3,2200),
+                          ylab = "Hazard")) 
+
+visreg2d(mod_cb_tvc, 
+         xvar = "time",
+         yvar = "estrec",
+         trans = exp,
+         print.cond = TRUE,
+         zlab = "Hazard",
+         plot.type = "image")
+
+visreg2d(mod_cb_tvc, 
+         xvar = "time",
+         yvar = "estrec",
+         trans = exp,
+         print.cond = TRUE,
+         zlab = "Hazard",
+         plot.type = "persp")
+
+#https://cran.r-project.org/web/packages/casebase/vignettes/plotsmoothHazard.html
