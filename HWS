@@ -1,0 +1,10 @@
+library(forecast)
+
+# Fit a Holt-Winters model 
+hw_model <- HoltWinters(ts_data) 
+
+# Generate forecasts
+hw_forecasts <- forecast(hw_model, h = 12)
+
+# Plot the forecasts
+plot(hw_forecasts)
