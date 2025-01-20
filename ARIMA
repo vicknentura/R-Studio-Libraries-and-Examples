@@ -1,0 +1,20 @@
+# Load required libraries
+library(forecast) 
+
+# Sample data (replace with your actual data)
+data(AirPassengers) 
+
+# Create a time series object
+ts_data <- AirPassengers
+
+# Fit an ARIMA model
+arima_model <- auto.arima(ts_data) 
+
+# Generate forecasts
+forecasts <- forecast(arima_model, h = 12) # Forecast for the next 12 periods
+
+# Plot the forecasts
+plot(forecasts)
+
+# Summary of the model
+summary(arima_model)
