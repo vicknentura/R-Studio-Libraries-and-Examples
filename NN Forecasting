@@ -1,0 +1,10 @@
+library(forecast)
+
+# Fit a neural network model
+nnetar_model <- nnetar(ts_data) 
+
+# Generate forecasts
+nnetar_forecasts <- forecast(nnetar_model, h = 12)
+
+# Plot the forecasts
+plot(nnetar_forecasts)
