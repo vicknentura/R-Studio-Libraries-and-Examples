@@ -1,0 +1,25 @@
+# Assuming:
+# - 'actual' is a vector of actual values
+# - 'forecast' is a vector of predicted values
+
+# MAE (Mean Absolute Error)
+MAE <- mean(abs(actual - forecast))
+
+# RMSE (Root Mean Squared Error)
+RMSE <- sqrt(mean((actual - forecast)^2))
+
+# MSE (Mean Squared Error)
+MSE <- mean((actual - forecast)^2)
+
+# MAPE (Mean Absolute Percentage Error)
+MAPE <- mean(abs((actual - forecast) / actual)) * 100 
+
+# sMAPE (Symmetric Mean Absolute Percentage Error)
+sMAPE <- mean(2 * abs(actual - forecast) / (abs(actual) + abs(forecast))) * 100
+
+# Print the results
+cat("MAE:", MAE, "\n")
+cat("RMSE:", RMSE, "\n")
+cat("MSE:", MSE, "\n")
+cat("MAPE:", MAPE, "%\n")
+cat("sMAPE:", sMAPE, "%\n")
